@@ -10,3 +10,9 @@
 *.lai
 *.la
 *.a
+
+# vi swp files
+*.swp
+
+#build product
+/tuner
