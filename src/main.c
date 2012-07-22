@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <signal.h>
 #include "libfft.h"
 #include "portaudio.h"
 
@@ -18,6 +19,9 @@ void applyWindow( float *window, float *data, int size );
 void computeSecondOrderLowPassParameters( float srate, float f, float *a, float *b );
 //mem must be of length 4.
 float processSecondOrderFilter( float x, float *mem, float *a, float *b );
+void signalHandler( int signum ) ;
+
+bool running = true;
 
 /* -- main function -- */
 int main( int argc, char **argv ) {
@@ -30,6 +34,7 @@ int main( int argc, char **argv ) {
    PaStream *stream = NULL;
    PaError err = 0;
    int size ;
+   struct sigaction action;
 
    size = FFT_SIZE * 4;
 
@@ -38,7 +43,25 @@ int main( int argc, char **argv ) {
    datai = (float *) calloc( 1, size );
    window = (float *) calloc( 1, size );
 
+   // add signal listen so we know when to exit:
+   action.sa_handler = signalHandler;
+   sigemptyset (&action.sa_mask);
+   action.sa_flags = 0;
+     
+   sigaction (SIGINT, &action, NULL);
+   sigaction (SIGHUP, &action, NULL);
+   sigaction (SIGTERM, &action, NULL);
+
    // build the window, fft, etc
+   /* test our window
+   buildHammingWindow( window, 30 );
+   for( int i=0; i<30; ++i ) {
+      for( int j=0; j<window[i]*50; ++j )
+         printf( "*" );
+      printf("\n");
+   }
+   */
+
    buildHammingWindow( window, FFT_SIZE );
    fft = initfft( FFT_EXP_SIZE );
    computeSecondOrderLowPassParameters( SAMPLE_RATE, 330, a, b );
@@ -70,11 +93,10 @@ int main( int argc, char **argv ) {
 
    err = Pa_StartStream( stream );
    if( err != paNoError ) goto error;
-   printf("Listening. Will run %d seconds.\n", NUM_SECONDS); fflush(stdout);
 
    // this is the main loop where we listen to and
    // process audio.
-   for( int i=0; i<(NUM_SECONDS*SAMPLE_RATE)/FFT_SIZE; ++i )
+   while( running )
    {
       // read some data
       err = Pa_ReadStream( stream, data, FFT_SIZE );
@@ -97,9 +119,12 @@ int main( int argc, char **argv ) {
          }
       }
 
+      int res = fseek( stdin, 1, SEEK_END );
+
       printf("\033[2J\033[1;1H"); //clear screen, go to top left
       fflush(stdout);
-      printf( "%d - %f\n", maxIndex, maxVal );
+      printf( "Tuner listening. Control-C to exit.\n" );
+      printf( "%d - %f %d\n", maxIndex, maxVal, res );
 
    }
    err = Pa_StopStream( stream );
@@ -166,3 +191,4 @@ float processSecondOrderFilter( float x, float *mem, float *a, float *b )
 
 		return ret;
 }
+void signalHandler( int signum ) { running = false; }
