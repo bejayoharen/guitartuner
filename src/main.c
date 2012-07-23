@@ -80,7 +80,7 @@ int main( int argc, char **argv ) {
    mem2[0] = 0; mem2[1] = 0; mem2[2] = 0; mem2[3] = 0;
    //freq/note tables
    for( int i=0; i<FFT_SIZE; ++i ) {
-      freqTable[i] = ( SAMPLE_RATE * i ) / (float) ( 2 * FFT_SIZE );
+      freqTable[i] = ( SAMPLE_RATE * i ) / (float) ( FFT_SIZE );
    }
    for( int i=0; i<FFT_SIZE; ++i ) {
       noteNameTable[i] = NULL;
@@ -158,7 +158,7 @@ int main( int argc, char **argv ) {
       //find the peak
       float maxVal = -1;
       int maxIndex = -1;
-      for( int j=0; j<FFT_SIZE; ++j ) {
+      for( int j=0; j<FFT_SIZE/2; ++j ) {
          float v = data[j] * data[j] + datai[j] * datai[j] ;
 /*
          printf( "%d: ", j*SAMPLE_RATE/(2*FFT_SIZE) );
