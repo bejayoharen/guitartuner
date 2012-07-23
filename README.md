@@ -3,6 +3,30 @@ guitartuner
 
 Simple guitar tuner sample app with BSD license
 
+There are plenty of tuners out there, this one is designed to be easy to understand and follow. It should also be easy to port to other platforms.
+
 Compiles on Mac OS X using make.
 
-More documentation to follow. Note that the FFT code comes with a slightly different license than the rest of the code.
+
+To Compile:
+==
+
+1. First, you need to download and compile portaudio from PortAudio.com.
+2. Grab libportaudio.a from lib/.libs in portaudio and put it in libs/
+3. run "make"
+4. the output is ./tuner
+
+
+Copyright
+==
+
+Tuner Copyright (C) 2012 by Bjorn Roche
+
+FFT Copyright (C) 1989 by Jef Poskanzer
+
+Permission to use, copy, modify, and distribute this software and its documentation for any purpose and without fee is hereby granted, provided that the above copyright notice appear in all copies and that both that copyright notice and this permission notice appear in supporting documentation.  This software is provided "as is" without express or implied warranty.
+
+More Info
+==
+You can find more info about this code on Bjorn Roche's blog:
+http://blog.bjornroche.com/2012/07/frequency-detection-using-fft-aka-pitch.html
