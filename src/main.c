@@ -37,7 +37,7 @@ void signalHandler( int signum ) ;
 
 static bool running = true;
 
-static char * NOTES[] = { "C", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
+static char * NOTES[] = { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
 
 /* -- main function -- */
 int main( int argc, char **argv ) {
@@ -99,9 +99,9 @@ int main( int argc, char **argv ) {
              index = j;
          }
       }
-      noteNameTable[index] = NOTES[(i-1)%12];
+      noteNameTable[index] = NOTES[i%12];
       notePitchTable[index] = pitch;
-      //printf( "%f %d %s\n", pitch, index, noteTable[index] );
+      //printf( "%f %d %s\n", pitch, index, noteNameTable[index] );
    }
 
 
