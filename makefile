@@ -1,4 +1,4 @@
-CFLAGS:=-02 -Wall -Werror -std=c99
+CFLAGS:=-O2 -Wall -Werror -std=c99
 CFILES:=$(wildcard src/*.c)
 OBJS:=$(patsubst src/%.c,objs/%.o,$(CFILES))
 HEADERS:=$(wildcard src/*.h)
