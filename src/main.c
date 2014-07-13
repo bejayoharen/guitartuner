@@ -17,7 +17,7 @@
 #include <math.h>
 #include <signal.h>
 #include "libfft.h"
-#include "portaudio.h"
+#include <portaudio.h>
 
 /* -- some basic parameters -- */
 #define SAMPLE_RATE (8000)
@@ -58,7 +58,7 @@ int main( int argc, char **argv ) {
    action.sa_handler = signalHandler;
    sigemptyset (&action.sa_mask);
    action.sa_flags = 0;
-     
+
    sigaction (SIGINT, &action, NULL);
    sigaction (SIGHUP, &action, NULL);
    sigaction (SIGTERM, &action, NULL);
