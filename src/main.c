@@ -23,7 +23,6 @@
 #define SAMPLE_RATE (8000)
 #define FFT_SIZE (8192)
 #define FFT_EXP_SIZE (13)
-#define NUM_SECONDS (20)
 
 /* -- functions declared and used here -- */
 void buildHammingWindow( float *window, int size );
@@ -64,21 +63,13 @@ int main( int argc, char **argv ) {
    sigaction (SIGTERM, &action, NULL);
 
    // build the window, fft, etc
-/*
-   buildHanWindow( window, 30 );
-   for( int i=0; i<30; ++i ) {
-      for( int j=0; j<window[i]*50; ++j )
-         printf( "*" );
-      printf("\n");
-   }
-   exit(0);
-*/
    buildHanWindow( window, FFT_SIZE );
    fft = initfft( FFT_EXP_SIZE );
    computeSecondOrderLowPassParameters( SAMPLE_RATE, 330, a, b );
    mem1[0] = 0; mem1[1] = 0; mem1[2] = 0; mem1[3] = 0;
    mem2[0] = 0; mem2[1] = 0; mem2[2] = 0; mem2[3] = 0;
-   //freq/note tables
+
+   // build the freq/note tables
    for( int i=0; i<FFT_SIZE; ++i ) {
       freqTable[i] = ( SAMPLE_RATE * i ) / (float) ( FFT_SIZE );
    }
@@ -103,7 +94,6 @@ int main( int argc, char **argv ) {
       notePitchTable[index] = pitch;
       //printf( "%f %d %s\n", pitch, index, noteNameTable[index] );
    }
-
 
 
    // initialize portaudio
@@ -140,13 +130,12 @@ int main( int argc, char **argv ) {
       err = Pa_ReadStream( stream, data, FFT_SIZE );
       if( err ) goto error; //FIXME: we don't want to err on xrun
 
-      // low-pass
-      //for( int i=0; i<FFT_SIZE; ++i )
-      //   printf( "in %f\n", data[i] );
+      // low-pass twice
       for( int j=0; j<FFT_SIZE; ++j ) {
          data[j] = processSecondOrderFilter( data[j], mem1, a, b );
          data[j] = processSecondOrderFilter( data[j], mem2, a, b );
       }
+
       // window
       applyWindow( window, data, FFT_SIZE );
 
@@ -160,18 +149,13 @@ int main( int argc, char **argv ) {
       int maxIndex = -1;
       for( int j=0; j<FFT_SIZE/2; ++j ) {
          float v = data[j] * data[j] + datai[j] * datai[j] ;
-/*
-         printf( "%d: ", j*SAMPLE_RATE/(2*FFT_SIZE) );
-         for( int i=0; i<sqrt(v)*100000000; ++i )
-            printf( "*" );
-         printf( "\n" );
-*/
          if( v > maxVal ) {
             maxVal = v;
             maxIndex = j;
          }
       }
       float freq = freqTable[maxIndex];
+
       //find the nearest note:
       int nearestNoteDelta=0;
       while( true ) {
@@ -187,7 +171,7 @@ int main( int argc, char **argv ) {
       float nearestNotePitch = notePitchTable[maxIndex+nearestNoteDelta];
       float centsSharp = 1200 * log( freq / nearestNotePitch ) / log( 2.0 );
 
-      // now output the results:
+      // Output the results:
       printf("\033[2J\033[1;1H"); //clear screen, go to top left
       fflush(stdout);
 
@@ -261,7 +245,6 @@ void computeSecondOrderLowPassParameters( float srate, float f, float *a, float 
    float w0 = 2 * M_PI * f/srate;
    float cosw0 = cos(w0);
    float sinw0 = sin(w0);
-   //float alpha = sinw0/2;
    float alpha = sinw0/2 * sqrt(2);
 
    a0   = 1 + alpha;
