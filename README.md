@@ -3,7 +3,7 @@ guitartuner
 
 Simple guitar tuner sample app with BSD license.
 
-There are plenty of tuners out there. This one is designed to be easy to understand and follow. I've also written more about [how frequency detection works](http://bjorg.bjornroche.com/audio/2024/11/15/frequency-tracking-fft.html), and specificly explain this codebase.
+There are plenty of tuners out there. This one is designed to be easy to understand and follow. I've also written more about [how frequency detection works](https://bjorg.bjornroche.com/audio/2024/11/17/frequency-tracking-fft.html), and specificly explain this codebase.
 
 It should also be easy to port to other platforms, though right now it compiles only on OS X and Linux.
 
@@ -20,7 +20,7 @@ To Compile:
 Copyright
 ---------
 
-Tuner Copyright (C) 2012 by Bjorn Roche
+Tuner Copyright (C) 2012-2024 by Bjorn Roche
 
 FFT Copyright (C) 1989 by Jef Poskanzer
 
