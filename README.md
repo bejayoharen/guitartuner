@@ -3,7 +3,8 @@ guitartuner
 
 Simple guitar tuner sample app with BSD license.
 
-There are plenty of tuners out there. This one is designed to be easy to understand and follow. You can read more about how it works here](http://bjorg.bjornroche.com/audio/2024/11/15/frequency-tracking-fft.html)
+There are plenty of tuners out there. This one is designed to be easy to understand and follow. I've also written more about [how frequency detection works](http://bjorg.bjornroche.com/audio/2024/11/15/frequency-tracking-fft.html), and specificly explain this codebase.
+
 It should also be easy to port to other platforms, though right now it compiles only on OS X and Linux.
 
 To Compile:
